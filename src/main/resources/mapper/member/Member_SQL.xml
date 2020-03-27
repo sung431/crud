@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="member">
+
+	<resultMap id="member" type="com.ese.crud.member.model.vo.MemberVO">
+		<id property="memberNo" column="member_no" />
+		<result property="memberName" column="member_name" />
+		<result property="deptNo" column="dept_no" />
+		<result property="deptName" column="dept_name" />
+	</resultMap>
+	
+	<select id="listAll" parameterType="com.ese.crud.Pagination" resultMap="member">
+		<![CDATA[
+			SELECT member_no, member_name, dept_name 
+			FROM member m 
+			LEFT JOIN department d 
+			ON m.dept_no = d.dept_no
+			ORDER BY member_no DESC
+			LIMIT #{pageSize} OFFSET #{startIndex};
+		]]>
+	</select>
+	
+	<insert id="insert">
+	
+		INSERT INTO member (member_name, dept_no) 
+		VALUES (#{memberName}, #{deptNo});
+		
+	</insert>
+	
+	<select id="selectOne" resultMap="member">
+		SELECT member_no, member_name, m.dept_no, dept_name 
+		FROM member m 
+		LEFT JOIN department d 
+		ON m.dept_no = d.dept_no 
+		WHERE member_no = #{memberNo};
+	</select>
+	
+	<update id="update">
+		UPDATE member 
+		SET member_name = #{memberName}, dept_no = #{deptNo}
+		WHERE member_no = #{memberNo};
+	</update>
+	
+	<delete id="delete">
+		DELETE FROM member 
+		WHERE member_no = #{modelNo};
+	</delete>
+	
+	<select id="selectListCnt" resultType="_int">
+		SELECT COUNT(*) FROM member;
+	</select>
+	
+</mapper>
